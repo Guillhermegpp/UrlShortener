@@ -28,22 +28,27 @@ app.post("/urls", async (req, res) => {
         return res.status(400).json({
             mensagem: "Dados inválidos",
         })
-        const codigo = geraCodigo(texto.url)
+    const codigo = geraCodigo(texto.url)
     const resultado = await pool.query(
         "INSERT INTO urls (url_original, codigo) VALUES ($1,$2) RETURNING *",
         [texto.url, codigo]
     )
 
-    res.json(resultado.rows[0]) 
+    res.json(resultado.rows[0])
 
 })
 
 
-function geraCodigo(url) {
-    const codigo = ""
+function geraCodigo(caracteres) {
+    let codigo = ""
+
+    for (let i = 0; i < 6; i++) {
+        const caractere = caracteres[Math.floor(Math.random() * caracteres.length)]
+        codigo += caractere
+    }
     return codigo
 }
-
+//Invoke-RestMethod -Method Post -Uri "http://localhost:3000/urls" -ContentType "application/json" -Body '{"url":"https://google.com"}'
 
 function validaUrl(urls) {
     const { url } = urls
