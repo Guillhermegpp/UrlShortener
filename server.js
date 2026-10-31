@@ -38,12 +38,46 @@ app.post("/urls", async (req, res) => {
 
 })
 
+app.get("/urls", async (req, res) => {
+
+    const resultado = await pool.query("SELECT * FROM urls")
+
+    res.json(resultado.rows)
+})
+
+app.get("/:codigo", async (req, res) => {
+    const codigo = req.params.codigo
+
+    const resultado = await pool.query('SELECT * FROM urls WHERE codigo = $1', [codigo]);
+
+    if (resultado.rows.length === 0)
+        return res.status(404).json({
+            mensagem: "URL não encontrada"
+        })
+    else {
+        const [url] = resultado.rows
+        await pool.query(
+            `UPDATE urls
+            SET acessos = acessos + 1
+            WHERE codigo = $1
+            `,
+            [codigo],
+        )
+        res.redirect(url.url_original)
+    }
+})
+
+
+
 
 function geraCodigo(caracteres) {
     let codigo = ""
 
     for (let i = 0; i < 6; i++) {
-        const caractere = caracteres[Math.floor(Math.random() * caracteres.length)]
+        let caractere
+        do {
+            caractere = caracteres[Math.floor(Math.random() * caracteres.length)]
+        } while (caractere === "/")
         codigo += caractere
     }
     return codigo
