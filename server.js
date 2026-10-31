@@ -28,14 +28,22 @@ app.post("/urls", async (req, res) => {
         return res.status(400).json({
             mensagem: "Dados inválidos",
         })
-    const codigo = geraCodigo(texto.url)
-    const resultado = await pool.query(
-        "INSERT INTO urls (url_original, codigo) VALUES ($1,$2) RETURNING *",
-        [texto.url, codigo]
-    )
+    while (true) {
+        const codigo = geraCodigo(texto.url)
+        try {
+            const resultado = await pool.query(
+                "INSERT INTO urls (url_original, codigo) VALUES ($1,$2) RETURNING *",
+                [texto.url, codigo]
+            )
+            return res.json(resultado.rows[0])
+        }
+        catch (error) {
+            if (error.code === "23505")
+                continue
+            throw error
+        }
 
-    res.json(resultado.rows[0])
-
+    }
 })
 
 app.get("/urls", async (req, res) => {
