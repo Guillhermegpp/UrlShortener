@@ -75,7 +75,25 @@ app.get("/:codigo", async (req, res) => {
     }
 })
 
+app.delete("/urls/:id", async (req, res) => {
+    const id = Number(req.params.id)
 
+    if (!Number.isInteger(id) || id <= 0) {
+        return res.status(400).json({
+            mensagem: "ID inválido"
+        })
+    }
+    const resultado = await pool.query('DELETE FROM urls WHERE id = $1', [id]);
+
+    if (resultado.rowCount === 0) {
+        return res.status(404).json({
+            mensagem: "URL não encontrada"
+        })
+    }
+
+    res.status(204).send()
+
+})
 
 
 function geraCodigo(caracteres) {
