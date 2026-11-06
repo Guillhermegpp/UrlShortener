@@ -39,7 +39,16 @@ app.post("/urls", async (req, res) => {
         }
         catch (error) {
             if (error.code === "23505")
-                continue
+                if (error.constraint === "urls_codigo_unique")
+                    continue
+            if (error.constraint === "urls_url_original_unique") {
+                return res.json(
+                    (await pool.query(
+                        "SELECT * FROM urls WHERE url_original = $1",
+                        [texto.url]
+                    )).rows[0]
+                )
+            }
             throw error
         }
 
@@ -116,9 +125,20 @@ function validaUrl(urls) {
         valido: true,
         erros: {}
     }
+    let endereco = url
+
     if (typeof url === 'string') {
         if (url.trim() !== "") {
-            if (!url.startsWith("https://") && !url.startsWith("http://")) {
+            if (!url.includes("://")) {
+                endereco = "https://" + url
+            }
+            try {
+                endereco = new URL(endereco)
+                if (!(endereco.protocol === "https:") && !(endereco.protocol === "http:")) {
+                    resultado.valido = false
+                    resultado.erros.protocolo = true
+                }
+            } catch (error) {
                 resultado.valido = false
                 resultado.erros.protocolo = true
             }
@@ -133,9 +153,18 @@ function validaUrl(urls) {
     }
 
     if (resultado.valido === true) {
-        resultado.url = url
+        resultado.url = endereco.href
     }
 
     return resultado
 }
 
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    if (res.headersSent) {
+        return next(err)
+    }
+    res.status(500).json({
+        mensagem: "Erro interno do servidor"
+    })
+});
