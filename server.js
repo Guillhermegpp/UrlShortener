@@ -1,5 +1,8 @@
 const express = require("express")
 const app = express()
+const cors = require("cors")
+app.use(express.json())
+app.use(cors())
 
 require("dotenv").config()
 
@@ -13,7 +16,6 @@ const pool = new Pool({
     database: process.env.DB_NAME
 })
 
-app.use(express.json())
 
 app.listen(3000)
 
@@ -24,9 +26,11 @@ app.get("/", (req, res) => {
 
 app.post("/urls", async (req, res) => {
     const texto = validaUrl(req.body)
+    console.log(texto)
     if (!texto.valido)
         return res.status(400).json({
             mensagem: "Dados inválidos",
+            erros: texto.erros
         })
     while (true) {
         const codigo = geraCodigo(texto.url)
@@ -134,6 +138,19 @@ function validaUrl(urls) {
             }
             try {
                 endereco = new URL(endereco)
+                const partes = endereco.hostname.split(".")
+                console.log("partes: " + partes)
+                if (
+                    partes.length < 2 ||
+                    partes[partes.length - 1].length < 2
+                ) {
+                    resultado.valido = false
+                    resultado.erros.hostname = true
+                }
+                if (partes[0] === "" || partes[partes.length - 1] === "") {
+                    resultado.valido = false
+                    resultado.erros.dominio = true
+                }
                 if (!(endereco.protocol === "https:") && !(endereco.protocol === "http:")) {
                     resultado.valido = false
                     resultado.erros.protocolo = true
