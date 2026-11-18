@@ -25,6 +25,7 @@ app.get("/", (req, res) => {
 })
 
 app.post("/urls", async (req, res) => {
+    let jaExiste = false
     const texto = validaUrl(req.body)
     console.log(texto)
     if (!texto.valido)
@@ -39,19 +40,23 @@ app.post("/urls", async (req, res) => {
                 "INSERT INTO urls (url_original, codigo) VALUES ($1,$2) RETURNING *",
                 [texto.url, codigo]
             )
-            return res.json(resultado.rows[0])
+            return res.json({...resultado.rows[0],
+                jaExiste
+            })
         }
         catch (error) {
             if (error.code === "23505")
                 if (error.constraint === "urls_codigo_unique")
                     continue
             if (error.constraint === "urls_url_original_unique") {
-                return res.json(
-                    (await pool.query(
+                jaExiste = true
+                return res.json({
+                    ...(await pool.query(
                         "SELECT * FROM urls WHERE url_original = $1",
                         [texto.url]
-                    )).rows[0]
-                )
+                    )).rows[0],
+                    jaExiste
+                })
             }
             throw error
         }
