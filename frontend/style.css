@@ -129,6 +129,32 @@ body {
     text-decoration: underline;
 }
 
+.estado-vazio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 40px 20px;
+    text-align: center;
+    color: #6b7280;
+}
+
+.estado-vazio span {
+    font-size: 32px;
+}
+
+.estado-vazio h3 {
+    color: #374151;
+    font-size: 18px;
+}
+
+.estado-vazio p {
+    font-size: 14px;
+    max-width: 300px;
+    line-height: 1.5;
+}
+
 .link-card p {
     background-color: #f8fafc;
     border-radius: 10px;

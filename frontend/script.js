@@ -2,7 +2,7 @@ const botao = document.querySelector("#botao-encurtar")
 const inputUrl = document.querySelector("#url")
 const formulario = document.querySelector("#form-url")
 const mensagem = document.querySelector("#mensagem")
-
+atualizaLista()
 
 formulario.addEventListener("submit", (evento) => {
     evento.preventDefault()
@@ -80,41 +80,63 @@ async function atualizaLista() {
         const dados = await resposta.json()
         const linkContainer = document.querySelector("#links-container")
         linkContainer.innerHTML = ""
-        for (const link of dados.toReversed()) {
-            const card = document.createElement("div")
-            card.classList.add("link-card")
+        if (dados.length < 1) {
+            const campo = document.createElement("div")
+            campo.classList.add("estado-vazio")
 
-            const linkElemento = document.createElement("a")
-            const codigo = document.createElement("p")
-            const acesso = document.createElement("span")
-            const botaoRemover = document.createElement("button")
+            const icone = document.createElement("span")
+            icone.textContent = "🔗"
 
-            botaoRemover.textContent = "Remover"
-            botaoRemover.classList.add("botao-remover")
+            const titulo = document.createElement("h3")
+            titulo.textContent = "Nenhum link por aqui ainda"
+
+            const descricao = document.createElement("p")
+            descricao.textContent = "Seus links encurtados aparecerão aqui quando você criar o primeiro."
+
+            campo.appendChild(icone)
+            campo.appendChild(titulo)
+            campo.appendChild(descricao)
+
+            linkContainer.appendChild(campo)
+        }
+        else {
+            for (const link of dados.toReversed()) {
+                const card = document.createElement("div")
+                card.classList.add("link-card")
+
+                const linkElemento = document.createElement("a")
+                const codigo = document.createElement("p")
+                const acesso = document.createElement("span")
+                const botaoRemover = document.createElement("button")
+
+                botaoRemover.textContent = "Remover"
+                botaoRemover.classList.add("botao-remover")
 
 
-            linkElemento.classList.add("link")
-            codigo.classList.add("codigo")
-            acesso.classList.add("acesso")
+                linkElemento.classList.add("link")
+                codigo.classList.add("codigo")
+                acesso.classList.add("acesso")
 
-            codigo.textContent = link.url_original
-            linkElemento.textContent = `meulink.com/${link.codigo}`
-            linkElemento.href = `http://localhost:3000/${link.codigo}`
-            linkElemento.target = "_blank"
-            linkElemento.rel = "noopener noreferrer"
-            acesso.textContent = `Total de acessos: ${link.acessos}`
+                codigo.textContent = link.url_original
+                linkElemento.textContent = `meulink.com/${link.codigo}`
+                linkElemento.href = `http://localhost:3000/${link.codigo}`
+                linkElemento.target = "_blank"
+                linkElemento.rel = "noopener noreferrer"
+                acesso.textContent = `Total de acessos: ${link.acessos}`
 
-            card.appendChild(linkElemento)
-            card.appendChild(codigo)
-            card.appendChild(acesso)
+                card.appendChild(linkElemento)
+                card.appendChild(codigo)
+                card.appendChild(acesso)
 
-            linkContainer.appendChild(card)
+                linkContainer.appendChild(card)
 
-            card.appendChild(botaoRemover)
-            botaoRemover.addEventListener("click", () => {
-                if (window.confirm("Deseja realmente excluir?"))
-                    removerUrl(link.id)
-            })
+                card.appendChild(botaoRemover)
+                botaoRemover.addEventListener("click", () => {
+                    console.log("Entrou pra excluir " + link.id)
+                    if (window.confirm("Deseja realmente excluir?"))
+                        removerUrl(link.id)
+                })
+            }
         }
     } catch (error) {
         console.error(error)
