@@ -1,12 +1,19 @@
 # URL Shortener
+
 ![JavaScript](https://img.shields.io/badge/JavaScript-Linguagem-F7DF1E?logo=javascript&logoColor=black)
 ![Node.js](https://img.shields.io/badge/Node.js-Runtime-339933?logo=node.js&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-Framework-000000?logo=express&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white)
 
-Uma API REST desenvolvida com **Node.js**, **Express** e **PostgreSQL**, que permite encurtar URLs, redirecionar usuários para os endereços originais e acompanhar a quantidade de acessos de cada link.
+Uma aplicação web de encurtamento de URLs desenvolvida com Node.js, Express, PostgreSQL, HTML, CSS e JavaScript.
 
-Projeto desenvolvido com o objetivo de praticar conceitos de desenvolvimento backend, integração com banco de dados e construção de APIs.
+O projeto permite encurtar URLs, gerenciar os links cadastrados, redirecionar usuários para os endereços originais e acompanhar a quantidade de acessos de cada link.
+
+Desenvolvido com o objetivo de praticar conceitos de desenvolvimento backend, construção de APIs REST, integração com banco de dados e consumo de APIs no frontend.
+
+## Preview
+
+![URL Shortener](./frontend/assets/preview.png)
 
 ## Tecnologias utilizadas
 
@@ -15,16 +22,32 @@ Projeto desenvolvido com o objetivo de praticar conceitos de desenvolvimento bac
 - **PostgreSQL** — banco de dados relacional.
 - **pg** — biblioteca para conexão com o PostgreSQL.
 - **dotenv** — gerenciamento de variáveis de ambiente.
+- **HTML5** — estrutura da interface.
+- **CSS3** — estilização e responsividade.
+- **JavaScript** — interações e consumo da API com Fetch.
 
 ## Funcionalidades
 
+
+### Backend
+
 - Encurtar URLs e gerar códigos de acesso.
+- Validar URLs recebidas pela API.
+- Evitar o cadastro duplicado de URLs.
 - Redirecionar para a URL original utilizando o código gerado.
 - Listar todas as URLs cadastradas.
 - Contabilizar a quantidade de acessos de cada URL.
-- Evitar o cadastro duplicado de URLs.
 - Excluir URLs cadastradas pelo ID.
-- Validar os dados recebidos pela API.
+
+### Frontend
+
+- Interface para cadastrar e encurtar URLs.
+- Listagem automática dos links cadastrados.
+- Exibição da URL original e do código encurtado.
+- Identificação de URLs já cadastradas.
+- Mensagens de sucesso, aviso e erro.
+- Exclusão de links pela interface, com confirmação.
+- Exibição de estado vazio quando não existem links cadastrados.
 
 ---
 
@@ -172,6 +195,17 @@ Corpo da requisição:
 
 `DELETE /urls/:id`
 
+## Executando o Frontend
+
+Após iniciar o servidor backend, siga os passos:
+1. Abra a pasta frontend no VS Code.
+2. Abra o arquivo index.html.
+3. Execute o arquivo utilizando a extensão Live Server.
+4. A aplicação será aberta no navegador.
+5. O frontend se comunica com a API através de requisições HTTP para http://localhost:3000.
+
+**Importante**: mantenha o servidor backend em execução enquanto utiliza a interface.
+
 ## Testando a API pelo PowerShell
 
 Com o servidor em execução, abra outro terminal PowerShell e utilize o comando abaixo para cadastrar uma URL:
@@ -199,3 +233,33 @@ Para testar o redirecionamento, acesse no navegador:
 ```text
 http://localhost:3000/CODIGO_GERADO
 ```
+
+## Estrutura do projeto
+
+```text
+UrlShortener/
+│
+├── frontend/
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+│
+├── server.js
+├── package.json
+├── package-lock.json
+├── .gitignore
+├── .env
+├── PostgreSQL_URL_Shortener.docx
+└── README.md
+```
+
+
+# Aprendizados
+
+- Desenvolvimento de API REST com Express.
+- Integração com PostgreSQL.
+- Tratamento de erros e validação de dados.
+- Operações CRUD.
+- Consumo de API utilizando Fetch.
+- Manipulação dinâmica do DOM.
+- Programação assíncrona com async/await.
